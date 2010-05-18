@@ -29,15 +29,16 @@ Nadeko.jar と同じディレクトリに config.yaml を作成します。
         - arg1
         - arg2
 
-name   : デーモン名
-command: デーモンを起動するコマンドを配列で記述
-dir    : デーモンを起動するディレクトリ
+  #-------------------------------------------------------------------
+  name   : デーモン名
+  command: デーモンを起動するコマンドを配列で記述
+  dir    : デーモンを起動するディレクトリ
 
 書き終えたら、Nadeko.jar をダブルクリックするなりなんなりで起動します。
 
 =head1 Author
 
-xaicron
-http://blog.livedoor.jp/xaicron
+  xaicron
+  http://blog.livedoor.jp/xaicron
 
 =cut
