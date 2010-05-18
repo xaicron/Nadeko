@@ -1,0 +1,41 @@
+=head1 これはなに？
+
+Nadeko はシンプルなデーモンマネージャーです。
+起動すると、タスクトレイに常駐して、複数のデーモンを管理することができます。
+
+=head1 インストール
+
+$ git clone URL
+$ perl Makefile.pl
+
+=head1 使い方
+
+Nadeko.jar と同じディレクトリに config.yaml を作成します。
+中身は以下のような感じです。
+
+  ---
+  executes:
+    - name: daemon1
+      command:
+        - daemon1
+        - arg1
+        - arg2
+    - name: daemon2
+      dir: /path/to/daemon2
+      command:
+        - daemon1
+        - arg1
+        - arg2
+
+name   : デーモン名
+command: デーモンを起動するコマンドを配列で記述
+dir    : デーモンを起動するディレクトリ
+
+書き終えたら、Nadeko.jar をダブルクリックするなりなんなりで起動します。
+
+=head1 Author
+
+xaicron
+http://blog.livedoor.jp/xaicron
+
+=cut

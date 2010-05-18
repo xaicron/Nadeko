@@ -1,0 +1,13 @@
+---
+executes:
+  - name: Foo
+    args:
+      - perl
+      - -e
+      - "print 'foo'"
+  - name: Bar
+    dir: .
+    args:
+      - perl
+      - -e
+      - "print 'bar'"
