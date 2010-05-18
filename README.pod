@@ -7,8 +7,8 @@ Nadeko はシンプルなデーモンマネージャーです。
 
 =head1 インストール
 
-$ git clone URL
-$ perl Makefile.pl
+  $ git clone git://github.com/xaicron/Nadeko.git
+  $ perl Makefile.pl
 
 =head1 使い方
 
