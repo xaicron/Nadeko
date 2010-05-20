@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,17 +47,25 @@ import org.ho.yaml.Yaml;
 public class Nadeko {
     private static final String AppName = "Nadeko";
     private static final String Version = "0.01";
-    private static final String trayIcon = "tray_icon.png";
-    private static final String execIcon = "exec_icon.png";
     private static final String defaultConfFile = "config.yaml";
+    private static final String iconPath = "img";
+    private static final String execIcon = "exec.png";
+    private String trayIcon = "tray.png";
     private JFrame frame;
     private JTabbedPane tabPane;
     private NadekoRunner[] processes;
+    private Map osNameMap = new HashMap<String, String>() {
+    	{
+        	put("Windows", "win");
+        	put("Linux",   "linux");
+        	put("Mac",     "mac");
+    	}
+    };
 
     public static void main(String[] args) throws Exception {
         final String confFile = args.length > 0 ? args[0] : defaultConfFile;
         Map conf = loadConfig(confFile);
-
+        
         Nadeko nadeko = new Nadeko();
         nadeko.createWindowAndTrayIcon(conf);
     }
@@ -89,7 +98,7 @@ public class Nadeko {
             scrollpane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
             tabPane.addTab(name, scrollpane);
-            tabPane.setTabComponentAt(i, new JLabel(name, new ImageIcon(readIconImage(execIcon)), JLabel.TRAILING));
+            tabPane.setTabComponentAt(i, new JLabel(name, new ImageIcon(readIconImage(getIconPath(execIcon))), JLabel.TRAILING));
 
             NadekoRunner runner = new NadekoRunner(dir, args, textArea);
             runner.start();
@@ -97,12 +106,14 @@ public class Nadeko {
 
             addRightClickMenu(i, runner);
         }
-
+        
         this.frame = new JFrame(AppName);
         this.frame.getContentPane().add(tabPane, BorderLayout.CENTER);
 
+        String trayIconPath = getTrayIconPath();
+        
         this.frame.setSize(600, 300);
-        this.frame.setIconImage(readIconImage(trayIcon));
+        this.frame.setIconImage(readIconImage(trayIconPath));
         this.frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowIconified(WindowEvent e) {
@@ -113,6 +124,15 @@ public class Nadeko {
         this.frame.setLocationRelativeTo(null);
 
         createTrayIcon();
+    }
+    
+    private String getIconPath(String iconName) {
+    	return iconPath + "/" + iconName;
+    }
+    
+    private String getTrayIconPath() {
+    	String osName = System.getProperty("os.name");
+    	return getIconPath(osNameMap.get(osName) + "/" + trayIcon); 
     }
 
     private void addRightClickMenu(final int index, final NadekoRunner runner) {
@@ -288,5 +308,4 @@ public class Nadeko {
             processes[i].kill();
         }
     }
-
 }
