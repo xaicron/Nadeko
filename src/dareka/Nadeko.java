@@ -88,10 +88,10 @@ public class Nadeko {
             Map exe = (Map)executes.get(i);
             String name = (String)exe.get("name");
             String dir = (String)exe.get("dir");
-            List exeargs = (List)exe.get("args");
-            String[] args = new String[exeargs.size()];
-            for (int j = 0; j < exeargs.size(); j++) {
-                args[j] = (String)exeargs.get(j);
+            List cmd = (List)exe.get("cmd");
+            String[] command = new String[cmd.size()];
+            for (int j = 0; j < cmd.size(); j++) {
+                command[j] = (String)cmd.get(j);
             }
             JTextArea textArea = new JTextArea();
             textArea.setWrapStyleWord(true);
@@ -104,7 +104,7 @@ public class Nadeko {
             tabPane.addTab(name, scrollpane);
             tabPane.setTabComponentAt(i, new JLabel(name, new ImageIcon(readIconImage(getIconPath(execIcon))), JLabel.TRAILING));
 
-            NadekoRunner runner = new NadekoRunner(dir, args, textArea);
+            NadekoRunner runner = new NadekoRunner(dir, command, textArea);
             runner.start();
             processes[i] = runner;
 

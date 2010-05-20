@@ -1,13 +1,14 @@
 ---
 executes:
   - name: Foo
-    args:
+    dir: .
+    cmd:
       - perl
       - -e
       - "print 'foo'"
   - name: Bar
     dir: .
-    args:
+    cmd:
       - perl
       - -e
       - "print 'bar'"

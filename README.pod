@@ -18,20 +18,21 @@ Nadeko.jar と同じディレクトリに config.yaml を作成します。
   ---
   executes:
     - name: daemon1
-      command:
+      dir: /path/to/daemon1
+      cmd:
         - daemon1
         - arg1
         - arg2
     - name: daemon2
       dir: /path/to/daemon2
-      command:
+      cmd:
         - daemon1
         - arg1
         - arg2
 
   #-------------------------------------------------------------------
   name   : デーモン名
-  command: デーモンを起動するコマンドを配列で記述
+  cmd    : デーモンを起動するコマンドを配列で記述
   dir    : デーモンを起動するディレクトリ
 
 書き終えたら、Nadeko.jar をダブルクリックするなりなんなりで起動します。
