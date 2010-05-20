@@ -16,11 +16,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
@@ -54,18 +56,22 @@ public class Nadeko {
     private JFrame frame;
     private JTabbedPane tabPane;
     private NadekoRunner[] processes;
-    private Map osNameMap = new HashMap<String, String>() {
-    	{
-        	put("Windows", "win");
-        	put("Linux",   "linux");
-        	put("Mac",     "mac");
-    	}
+
+    private static final String WINDOWS = "Windows";
+    private static final String LINUX   = "Linux";
+    private static final String MAC     = "Mac";
+    private Map<String, String> ImagePath = new HashMap<String, String>() {
+        {
+            put(WINDOWS, "win");
+            put(LINUX, "linux");
+            put(MAC, "mac");
+        }
     };
 
     public static void main(String[] args) throws Exception {
         final String confFile = args.length > 0 ? args[0] : defaultConfFile;
         Map conf = loadConfig(confFile);
-        
+
         Nadeko nadeko = new Nadeko();
         nadeko.createWindowAndTrayIcon(conf);
     }
@@ -106,12 +112,12 @@ public class Nadeko {
 
             addRightClickMenu(i, runner);
         }
-        
+
         this.frame = new JFrame(AppName);
         this.frame.getContentPane().add(tabPane, BorderLayout.CENTER);
 
         String trayIconPath = getTrayIconPath();
-        
+
         this.frame.setSize(600, 300);
         this.frame.setIconImage(readIconImage(trayIconPath));
         this.frame.addWindowListener(new WindowAdapter() {
@@ -125,14 +131,27 @@ public class Nadeko {
 
         createTrayIcon();
     }
-    
+
     private String getIconPath(String iconName) {
-    	return iconPath + "/" + iconName;
+        return iconPath + "/" + iconName;
     }
-    
+
     private String getTrayIconPath() {
-    	String osName = System.getProperty("os.name");
-    	return getIconPath(osNameMap.get(osName) + "/" + trayIcon); 
+        String osName = System.getProperty("os.name");
+        String basePath;
+        if(osName.indexOf(WINDOWS) >= 0) {
+            basePath = ImagePath.get(WINDOWS);
+        }
+        else if(osName.indexOf(LINUX) >= 0) {
+            basePath = ImagePath.get(LINUX);
+        }
+        else if(osName.indexOf(MAC) >= 0) {
+            basePath = ImagePath.get(MAC);
+        }
+        else {
+            basePath = ImagePath.get(WINDOWS);
+        }
+        return getIconPath(basePath + File.separator + trayIcon);
     }
 
     private void addRightClickMenu(final int index, final NadekoRunner runner) {
