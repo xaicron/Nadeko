@@ -212,7 +212,15 @@ public class Nadeko {
             }
 
             @Override
-            public void mousePressed(MouseEvent e) {}
+            public void mousePressed(MouseEvent e) {
+                tabPane.setSelectedIndex(index);
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    if (e.isPopupTrigger()) {
+                        popup.show(e.getComponent(), e.getX() + 10, e.getY());
+                    }
+                }
+            }
+
             @Override
             public void mouseExited(MouseEvent e) {}
             @Override
