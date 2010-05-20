@@ -16,7 +16,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -150,7 +149,7 @@ public class Nadeko {
         else {
             basePath = ImagePath.get(WINDOWS);
         }
-        return getIconPath(basePath + File.separator + trayIcon);
+        return getIconPath(basePath + "/" + trayIcon);
     }
 
     private void addRightClickMenu(final int index, final NadekoRunner runner) {
