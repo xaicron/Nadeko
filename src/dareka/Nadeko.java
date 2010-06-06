@@ -109,6 +109,7 @@ public class Nadeko {
             processes[i] = runner;
 
             addRightClickMenu(i, runner);
+            recoveryProcess(runner);
         }
 
         this.frame = new JFrame(AppName);
@@ -226,7 +227,6 @@ public class Nadeko {
             @Override
             public void mouseClicked(MouseEvent e) {}
         });
-
     }
 
     private void createTrayIcon() throws IOException, AWTException {
@@ -332,5 +332,26 @@ public class Nadeko {
         for (int i = 0; i < processes.length; i++) {
             processes[i].kill();
         }
+    }
+
+    private void recoveryProcess(final NadekoRunner runner) {
+        new Thread() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (!runner.isAlive()) {
+                        runner.setText("*** Recovery...");
+                        runner.start();
+                        runner.setText("done.\n");
+                    }
+                }
+            }
+        }.start();
     }
 }

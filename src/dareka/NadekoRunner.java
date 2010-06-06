@@ -14,7 +14,8 @@ public class NadekoRunner {
     private JTextArea textArea;
     private Process process;
     private String messageBuffer = "";
-    private Boolean isRunning;
+    private Boolean isRunning = true;
+    private Boolean isAlive = true;
 
     public NadekoRunner(String dir, String[] cmd, JTextArea textArea) {
         this.cmd = cmd;
@@ -28,18 +29,20 @@ public class NadekoRunner {
             public void run() {
                 try {
                     process = Runtime.getRuntime().exec(cmd, null, new File(dir));
-                    writeLog(new BufferedReader(new InputStreamReader(process.getInputStream())));
-                    writeLog(new BufferedReader(new InputStreamReader(process.getErrorStream())));
                     isRunning = true;
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+                catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                writeLog(new BufferedReader(new InputStreamReader(process.getInputStream())));
+                writeLog(new BufferedReader(new InputStreamReader(process.getErrorStream())));
+                monitor();
             }
-        }.start() ;
+        }.start();
     }
 
     private void writeLog(final BufferedReader br) {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 try {
@@ -53,14 +56,45 @@ public class NadekoRunner {
                             }
                         });
                     }
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }.start();
     }
 
-    private void setText(String s) {
+    private void monitor() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (isRunning()) {
+                        try {
+                            process.exitValue();
+                            isAlive = false;
+                        }
+                        catch (Exception e) {
+                            isAlive = true;
+                        }
+                        finally {
+                            if (!isAlive) {
+                                break;
+                            }
+                        }
+                    }
+                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+    }
+
+    public void setText(String s) {
         textArea.setText(messageBuffer + s);
         messageBuffer = textArea.getText();
     }
@@ -87,5 +121,8 @@ public class NadekoRunner {
 
     public Boolean isRunning() {
         return this.isRunning;
+    }
+    public Boolean isAlive() {
+        return this.isAlive;
     }
 }
