@@ -16,6 +16,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -89,6 +90,7 @@ public class Nadeko {
             String name = (String)exe.get("name");
             String dir = (String)exe.get("dir");
             List cmd = (List)exe.get("cmd");
+            String logFile = (String)exe.get("log");
             String[] command = new String[cmd.size()];
             for (int j = 0; j < cmd.size(); j++) {
                 command[j] = (String)cmd.get(j);
@@ -105,6 +107,10 @@ public class Nadeko {
             tabPane.setTabComponentAt(i, new JLabel(name, new ImageIcon(readIconImage(getIconPath(execIcon))), JLabel.TRAILING));
 
             NadekoRunner runner = new NadekoRunner(dir, command, textArea);
+            if (logFile != null) {
+                runner.setLogFile(logFile);
+            }
+
             runner.start();
             processes[i] = runner;
 

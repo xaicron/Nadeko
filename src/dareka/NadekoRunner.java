@@ -1,9 +1,15 @@
 package dareka;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -16,6 +22,7 @@ public class NadekoRunner {
     private String messageBuffer = "";
     private Boolean isRunning = true;
     private Boolean isAlive = true;
+    private String logFile;
 
     public NadekoRunner(String dir, String[] cmd, JTextArea textArea) {
         this.cmd = cmd;
@@ -94,9 +101,53 @@ public class NadekoRunner {
         }.start();
     }
 
+    public BufferedWriter getLogWriter() {
+        if (logFile == null) return null;
+
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(_froamtLogFileName(logFile), true)));
+        }
+        catch (FileNotFoundException e) {
+            logFile = null;
+            e.printStackTrace();
+        }
+        return writer;
+    }
+
+    private String _froamtLogFileName(String logFile) {
+        Date now = new Date();
+        SimpleDateFormat date = new SimpleDateFormat();
+        return dir + '/' + logFile
+            .replaceAll("%Y", __dateFormat(date, now, "yyyy"))
+            .replace("%M", __dateFormat(date, now, "MM"))
+            .replaceAll("%D", __dateFormat(date, now, "dd"));
+    }
+
+    private String __dateFormat(SimpleDateFormat dateFormat, Date date, String pattern) {
+        dateFormat.applyPattern(pattern);
+        return dateFormat.format(date);
+    }
+
     public void setText(String s) {
         textArea.setText(messageBuffer + s);
+        BufferedWriter writer = getLogWriter();
+        if (writer != null) {
+            try {
+                logging(writer, s);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         messageBuffer = textArea.getText();
+    }
+
+    private void logging(BufferedWriter writer, String buff) throws IOException {
+        SimpleDateFormat dateForamt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        writer.write("[" + dateForamt.format(new Date()) + "] " + buff);
+        writer.flush();
+        writer.close();
     }
 
     public void kill() {
@@ -117,6 +168,10 @@ public class NadekoRunner {
     public void clear() {
         messageBuffer = "";
         textArea.setText("");
+    }
+
+    public void setLogFile(String logFile) {
+        this.logFile = logFile;
     }
 
     public Boolean isRunning() {

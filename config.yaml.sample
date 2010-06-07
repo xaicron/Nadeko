@@ -8,6 +8,7 @@ executes:
       - "print 'foo'"
   - name: Bar
     dir: .
+    log: %Y-%M-%D.log
     cmd:
       - perl
       - -e
