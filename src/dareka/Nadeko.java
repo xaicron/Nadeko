@@ -16,7 +16,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -93,7 +92,13 @@ public class Nadeko {
             String logFile = (String)exe.get("log");
             String[] command = new String[cmd.size()];
             for (int j = 0; j < cmd.size(); j++) {
-                command[j] = (String)cmd.get(j);
+                Object obj = cmd.get(j);
+                if (obj instanceof String) {
+                    command[j] = (String)obj;
+                }
+                else if (obj instanceof Integer) {
+                    command[j] = ((Integer)obj).toString();
+                }
             }
             JTextArea textArea = new JTextArea();
             textArea.setWrapStyleWord(true);
