@@ -356,7 +356,7 @@ public class Nadeko {
                     catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if (!runner.isAlive()) {
+                    if (!runner.isAlive() && runner.isRunning()) {
                         runner.setText("*** Recovery...");
                         runner.start();
                         runner.setText("done.\n");
